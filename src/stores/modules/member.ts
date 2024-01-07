@@ -30,6 +30,7 @@ export const useMemberStore = defineStore(
   // {
   //   persist: true,
   // },
+  // 小程序端持久化方案
   {
     persist: {
       storage: {
