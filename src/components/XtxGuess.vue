@@ -1,17 +1,19 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, defineExpose } from 'vue'
 import { getHomeGuess } from '@/services/home'
 import type { GuessItem } from '@/types/home'
 
 const guessList = ref<GuessItem[]>([])
 const getHomeGoodsGuessLikeData = async () => {
   const { result: { items } } = await getHomeGuess()
-  console.log(items);
-
   guessList.value = items
 }
 onMounted(() => {
   getHomeGoodsGuessLikeData()
+})
+
+defineExpose({
+  getMore: getHomeGoodsGuessLikeData
 })
 </script>
 
