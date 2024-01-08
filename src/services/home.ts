@@ -1,4 +1,5 @@
-import type { BannerItem, MutliItem, HotItem } from "@/types/home"
+import type { BannerItem, MutliItem, HotItem, GuessItem } from "@/types/home"
+import type { PageResult } from "@/types/global"
 import { http } from "@/utils/http"
 
 /**
@@ -29,5 +30,13 @@ export const getHomeHot = () => {
   return http<HotItem[]>({
     method: 'GET',
     url: '/home/hot/mutli',
+  })
+}
+
+// 猜你喜欢
+export const getHomeGuess = () => {
+  return http<PageResult<GuessItem>>({
+    method: 'GET',
+    url: '/home/goods/guessLike',
   })
 }
