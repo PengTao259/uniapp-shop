@@ -14,6 +14,7 @@ const hotMap = [
 const query = defineProps<{
   type: string
 }>()
+const finish = ref(false)
 const currHotMap = hotMap.find((item) => item.type === query.type)
 uni.setNavigationBarTitle({ title: currHotMap!.title })
 
@@ -26,6 +27,23 @@ const getHotRecommendData = () => {
   getHotRecommend(currHotMap!.url).then((res) => {
     bannerPicture.value = res.result.bannerPicture
     subTypes.value = res.result.subTypes
+  })
+}
+
+// 滚动触底
+const onScrolltolower = () => {
+  const subType = subTypes.value[activeIndex.value]
+  console.log(subType)
+  subType.goodsItems.page++
+  // 调用api传参
+  getHotRecommend(currHotMap!.url, {
+    subType: subType.id,
+    page: subType.goodsItems.page,
+    pageSize: subType.goodsItems.pageSize,
+  }).then((res) => {
+    console.log(res)
+    const newResult = res.result.subTypes[activeIndex.value]
+    subType.goodsItems.items.push(...newResult.goodsItems.items)
   })
 }
 
@@ -59,6 +77,7 @@ onLoad(() => {
       v-show="activeIndex === index"
       scroll-y
       class="scroll-view"
+      @scrolltolower="onScrolltolower"
     >
       <view class="goods">
         <navigator
@@ -76,7 +95,7 @@ onLoad(() => {
           </view>
         </navigator>
       </view>
-      <view class="loading-text">正在加载...</view>
+      <view class="loading-text"> {{ finish ? '没有更多数据~' : '正在加载...' }} </view>
     </scroll-view>
   </view>
 </template>
