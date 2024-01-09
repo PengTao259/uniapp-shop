@@ -13,8 +13,14 @@ defineProps<{
         <text class="title-text">{{ item.title }}</text>
         <text class="title-desc">{{ item.alt }}</text>
       </view>
-      <navigator hover-class="none" url="/pages/hot/hot" class="cards">
-        <image class="image" mode="aspectFit" :src="src" v-for="src in item.pictures" :key="src"></image>
+      <navigator hover-class="none" :url="`/pages/hot/index?type=${item.type}`" class="cards">
+        <image
+          class="image"
+          mode="aspectFit"
+          :src="src"
+          v-for="src in item.pictures"
+          :key="src"
+        ></image>
       </navigator>
     </view>
   </view>
