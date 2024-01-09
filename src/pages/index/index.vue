@@ -3,11 +3,14 @@ import XtxSwiper from '@/components/XtxSwiper.vue'
 import CustomNavbar from './components/index.vue'
 import CategoryPanel from './components/CategoryPanel.vue'
 import HotPanel from './components/HotPanel.vue'
+import PageSkeleton from './components/PageSkeleton.vue'
 import { ref } from 'vue'
 import { getHomeBanner, getHomeMutli, getHomeHot } from '@/services/home'
 import { onLoad } from '@dcloudio/uni-app'
 import type { BannerItem, MutliItem, HotItem } from '@/types/home'
 import type { XtxGuessInstance } from '@/types/component'
+
+const isLoading = ref(false)
 
 const bannerList = ref<BannerItem[]>([])
 const getHomeBannerData = async () => {
@@ -43,10 +46,13 @@ const onRefresherrefresh = async () => {
 }
 
 // 页面加载
-onLoad(() => {
-  getHomeBannerData()
-  getHomeCategoryData()
-  getHomeHotData()
+onLoad(async () => {
+  isLoading.value = true
+  await Promise.all([getHomeBannerData(),
+  getHomeCategoryData(),
+  getHomeHotData()]).then(() => {
+    isLoading.value = false
+  })
 })
 
 </script>
@@ -56,14 +62,17 @@ onLoad(() => {
   <CustomNavbar />
   <scroll-view refresher-enabled :refresher-triggered="isRefresher" @refresherrefresh="onRefresherrefresh"
     @scrolltolower="onScrolltolower" class="scroll-view" scroll-y>
-    <!-- 自定义轮播图 -->
-    <XtxSwiper :list="bannerList" />
-    <!-- 分类面板 -->
-    <CategoryPanel :list="categoryList" />
-    <!-- 热门推荐 -->
-    <HotPanel :list="hotList" />
-    <!-- 猜你喜欢 -->
-    <XtxGuess ref="guessRef" />
+    <PageSkeleton v-if="isLoading" />
+    <template v-else>
+      <!-- 自定义轮播图 -->
+      <XtxSwiper :list="bannerList" />
+      <!-- 分类面板 -->
+      <CategoryPanel :list="categoryList" />
+      <!-- 热门推荐 -->
+      <HotPanel :list="hotList" />
+      <!-- 猜你喜欢 -->
+      <XtxGuess ref="guessRef" />
+    </template>
   </scroll-view>
 </template>
 
