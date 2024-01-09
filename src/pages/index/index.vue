@@ -36,7 +36,8 @@ const onScrolltolower = () => {
 const isRefresher = ref(false)
 const onRefresherrefresh = async () => {
   isRefresher.value = true
-  await Promise.all([getHomeBannerData(), getHomeCategoryData(), getHomeHotData()]).then(() => {
+  guessRef.value?.resetData()
+  await Promise.all([getHomeBannerData(), getHomeCategoryData(), getHomeHotData(), guessRef.value?.getMore()]).then(() => {
     isRefresher.value = false
   })
 }
