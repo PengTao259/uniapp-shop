@@ -14,17 +14,21 @@ const hotMap = [
 const query = defineProps<{
   type: string
 }>()
-const finish = ref(false)
 const currHotMap = hotMap.find((item) => item.type === query.type)
 uni.setNavigationBarTitle({ title: currHotMap!.title })
 
 // 推荐封面图
 const bannerPicture = ref('')
-const subTypes = ref<SubTypeItem[]>([])
+const subTypes = ref<(SubTypeItem & { finish?: boolean })[]>([])
 const activeIndex = ref(0)
 // 获取热门推荐列表
 const getHotRecommendData = () => {
-  getHotRecommend(currHotMap!.url).then((res) => {
+  getHotRecommend(currHotMap!.url, {
+    // 环境变量
+    // 如果在开发环境 修改初始页面方便测试分页结束
+    page: import.meta.env.DEV ? 30 : 1,
+    pageSize: 10,
+  }).then((res) => {
     bannerPicture.value = res.result.bannerPicture
     subTypes.value = res.result.subTypes
   })
@@ -33,15 +37,19 @@ const getHotRecommendData = () => {
 // 滚动触底
 const onScrolltolower = () => {
   const subType = subTypes.value[activeIndex.value]
-  console.log(subType)
-  subType.goodsItems.page++
+  if (subType.goodsItems.page < subType.goodsItems.pages) {
+    subType.goodsItems.page++
+    subType.finish = false
+  } else {
+    subType.finish = true
+    return uni.showToast({ title: '没有更多数据了~', icon: 'none' })
+  }
   // 调用api传参
   getHotRecommend(currHotMap!.url, {
     subType: subType.id,
     page: subType.goodsItems.page,
     pageSize: subType.goodsItems.pageSize,
   }).then((res) => {
-    console.log(res)
     const newResult = res.result.subTypes[activeIndex.value]
     subType.goodsItems.items.push(...newResult.goodsItems.items)
   })
@@ -95,7 +103,7 @@ onLoad(() => {
           </view>
         </navigator>
       </view>
-      <view class="loading-text"> {{ finish ? '没有更多数据~' : '正在加载...' }} </view>
+      <view class="loading-text"> {{ item.finish ? '没有更多数据了~' : '正在加载...' }} </view>
     </scroll-view>
   </view>
 </template>
