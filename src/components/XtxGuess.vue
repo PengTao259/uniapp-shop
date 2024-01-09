@@ -2,11 +2,31 @@
 import { ref, onMounted, defineExpose } from 'vue'
 import { getHomeGuess } from '@/services/home'
 import type { GuessItem } from '@/types/home'
+import type { PageParams } from '@/types/global';
 
+// 分页参数
+const pageParams: Required<PageParams> = {
+  page: 1,
+  pageSize: 10
+}
 const guessList = ref<GuessItem[]>([])
+// 滑动到底标记
+const finish = ref(false)
 const getHomeGoodsGuessLikeData = async () => {
-  const { result: { items } } = await getHomeGuess()
-  guessList.value = items
+  if (finish.value) return uni.showToast({
+    title: '没有更多数据了',
+    icon: 'none'
+  })
+  const { result, result: { items } } = await getHomeGuess(pageParams)
+  // 数组追加
+  guessList.value.push(...items)
+  if (pageParams.page < result.pages) {
+    // 页码累加
+    pageParams.page++
+  } else {
+    // 没有更多数据了
+    finish.value = true
+  }
 }
 onMounted(() => {
   getHomeGoodsGuessLikeData()
@@ -32,7 +52,7 @@ defineExpose({
       </view>
     </navigator>
   </view>
-  <view class="loading-text"> 正在加载... </view>
+  <view class="loading-text"> {{ finish ? '没有更多数据~' : '正在加载...' }} </view>
 </template>
 
 <style lang="scss">

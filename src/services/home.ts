@@ -1,5 +1,5 @@
 import type { BannerItem, MutliItem, HotItem, GuessItem } from "@/types/home"
-import type { PageResult } from "@/types/global"
+import type { PageResult, PageParams } from "@/types/global"
 import { http } from "@/utils/http"
 
 /**
@@ -34,9 +34,10 @@ export const getHomeHot = () => {
 }
 
 // 猜你喜欢
-export const getHomeGuess = () => {
+export const getHomeGuess = (data?: PageParams) => {
   return http<PageResult<GuessItem>>({
     method: 'GET',
     url: '/home/goods/guessLike',
+    data
   })
 }
