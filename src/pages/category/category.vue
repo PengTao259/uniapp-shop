@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { getHomeBanner } from '@/services/home'
+import { ref, computed } from 'vue'
+import type { CategoryTopItem } from '@/types/category'
 import type { BannerItem } from '@/types/home'
+import { getHomeBanner } from '@/services/home'
 import { onLoad } from '@dcloudio/uni-app'
 import { getCategoryTop } from '@/services/category'
-import type { CategoryTopItem } from '@/types/category'
-import { computed } from 'vue'
+import PageSkeletop from './components/PageSkeletop.vue'
+// import PageSkeletop from '@/pages/'
 //  获取轮播图展示数据
 const bannerList = ref<BannerItem[]>([])
 const getHomeBannerList = async () => {
@@ -20,10 +21,13 @@ const getCategoryTopList = async () => {
   categoryList.value = result
 }
 
+// 是否数据加载完毕
+const isFinished = ref(false)
+
 // 页面加载时获取数据
 onLoad(() => {
   Promise.all([getHomeBannerList(), getCategoryTopList()]).then(() => {
-    console.log('数据加载完成')
+    isFinished.value = true
   })
 })
 
@@ -34,7 +38,7 @@ const subCategoryList = computed(() => {
 </script>
 
 <template>
-  <view class="viewport">
+  <view class="viewport" v-if="isFinished">
     <!-- 搜索框 -->
     <view class="search">
       <view class="input">
@@ -84,6 +88,7 @@ const subCategoryList = computed(() => {
       </scroll-view>
     </view>
   </view>
+  <PageSkeletop v-else />
 </template>
 
 <style lang="scss">
