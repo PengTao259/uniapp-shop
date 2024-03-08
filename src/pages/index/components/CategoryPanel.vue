@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { MutliItem } from '@/types/home';
+import type { MutliItem } from '@/types/home'
 
 defineProps<{
   list: MutliItem[]
@@ -8,7 +8,13 @@ defineProps<{
 
 <template>
   <view class="category">
-    <navigator class="category-item" hover-class="none" url="/pages/index/index" v-for="item in list" :key="item.id">
+    <navigator
+      class="category-item"
+      hover-class="none"
+      url="/pages/index/index"
+      v-for="item in list"
+      :key="item.id"
+    >
       <image class="icon" :src="item.icon"></image>
       <text class="text">{{ item.name }}</text>
     </navigator>

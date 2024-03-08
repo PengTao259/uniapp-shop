@@ -61,7 +61,7 @@ const subCategoryList = computed(() => {
       <!-- 右侧：二级分类 -->
       <scroll-view class="secondary" scroll-y>
         <!-- 焦点图 -->
-        <XtxSwiper class="banner" :list="bannerList" />
+        <!-- <XtxSwiper class="banner" :list="bannerList" /> -->
         <!-- 内容区域 -->
         <view class="panel" v-for="item in subCategoryList" :key="item.id">
           <view class="title">
@@ -74,7 +74,7 @@ const subCategoryList = computed(() => {
               :key="goods.id"
               class="goods"
               hover-class="none"
-              :url="`/pages/goods/goods?id=${item.id}`"
+              :url="`/pages/goods/index?id=${item.id}`"
             >
               <image class="image" :src="goods.picture"></image>
               <view class="name ellipsis">{{ goods.name }}</view>

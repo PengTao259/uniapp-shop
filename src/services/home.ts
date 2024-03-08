@@ -1,22 +1,21 @@
-import type { BannerItem, MutliItem, HotItem, GuessItem } from "@/types/home"
-import type { PageResult, PageParams } from "@/types/global"
-import { http } from "@/utils/http"
+import type { BannerItem, MutliItem, HotItem, GuessItem } from '@/types/home'
+import type { PageResult, PageParams } from '@/types/global'
+import { http } from '@/utils/http'
 
 /**
- * 
+ *
  * @param distributionSite 广告区域展示位置1 为首页（默认值）2 为商品分类页
- * @returns 
+ * @returns
  */
 export const getHomeBanner = (distributionSite = 1) => {
   return http<BannerItem[]>({
     method: 'GET',
     url: '/home/banner',
     data: {
-      distributionSite
-    }
+      distributionSite,
+    },
   })
 }
-
 
 export const getHomeMutli = () => {
   return http<MutliItem[]>({
@@ -38,6 +37,6 @@ export const getHomeGuess = (data?: PageParams) => {
   return http<PageResult<GuessItem>>({
     method: 'GET',
     url: '/home/goods/guessLike',
-    data
+    data,
   })
 }

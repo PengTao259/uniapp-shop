@@ -40,7 +40,12 @@ const isRefresher = ref(false)
 const onRefresherrefresh = async () => {
   isRefresher.value = true
   guessRef.value?.resetData()
-  await Promise.all([getHomeBannerData(), getHomeCategoryData(), getHomeHotData(), guessRef.value?.getMore()]).then(() => {
+  await Promise.all([
+    getHomeBannerData(),
+    getHomeCategoryData(),
+    getHomeHotData(),
+    guessRef.value?.getMore(),
+  ]).then(() => {
     isRefresher.value = false
   })
 }
@@ -48,20 +53,23 @@ const onRefresherrefresh = async () => {
 // 页面加载
 onLoad(async () => {
   isLoading.value = true
-  await Promise.all([getHomeBannerData(),
-  getHomeCategoryData(),
-  getHomeHotData()]).then(() => {
+  await Promise.all([getHomeBannerData(), getHomeCategoryData(), getHomeHotData()]).then(() => {
     isLoading.value = false
   })
 })
-
 </script>
 
 <template>
   <!-- 自定义导航栏 -->
   <CustomNavbar />
-  <scroll-view refresher-enabled :refresher-triggered="isRefresher" @refresherrefresh="onRefresherrefresh"
-    @scrolltolower="onScrolltolower" class="scroll-view" scroll-y>
+  <scroll-view
+    refresher-enabled
+    :refresher-triggered="isRefresher"
+    @refresherrefresh="onRefresherrefresh"
+    @scrolltolower="onScrolltolower"
+    class="scroll-view"
+    scroll-y
+  >
     <PageSkeleton v-if="isLoading" />
     <template v-else>
       <!-- 自定义轮播图 -->
